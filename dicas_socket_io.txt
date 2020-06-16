@@ -1,0 +1,49 @@
+/**
+// enviar apenas para o cliente atual
+client.emit('message', "this is a test");
+
+// enviar para todos os clientes, inclusive o atual
+io.emit('message', "this is a test");
+
+// enviar para todos os clientes, exceto o atual
+client.broadcast.emit('message', "this is a test");
+
+// enviar para todos os clientes (com exceção do atual) para uma sala específica
+socket.broadcast.to('game').emit('message', 'nice game');
+
+// enviar para todos os clientes em uma sala específica
+io.in('game').emit('message', 'cool game');
+
+// enviar para o atual, caso ele esteja na sala
+client.to('game').emit('message', 'enjoy the game');
+
+// enviar para todos os clientes em um namespace 'namespace1'
+io.of('namespace1').emit('message', 'gg');
+
+// enviando para um socketid individual
+client.broadcast.to(socketid).emit('message', 'for your eyes only');
+
+io.on('connection', function(socket){
+
+  socket.join('minha sala');
+
+});
+
+// Server Side
+    socket.on('addToRoom', function(roomName) {
+        socket.join(roomName);
+    });
+
+    socket.on('removeFromRoom', function(roomName) {
+        socket.leave(roomName);
+    });
+
+
+ // Broadcast to everyone in a room, except you
+    socket.broadcast.to("room name").emit("your message");
+
+    // Broadcast to everyone in a room, including you
+    io.sockets.in("room name").emit("your message");
+
+https://imasters.com.br/desenvolvimento/conectando-no-socket-io-avancado
+ */

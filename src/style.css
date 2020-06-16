@@ -35,6 +35,7 @@ button {
    font-weight: bold;
    color: #FFF;
    margin-top: 10px;
+   margin-bottom: 20px;
 }
 
 .messages {
@@ -43,4 +44,12 @@ button {
    margin: 20px 0;
    border: 1px solid #ddd;
    padding: 20px;
+}
+
+.div_sair {
+   width: 600px;
+}
+
+#sair {
+
 }
