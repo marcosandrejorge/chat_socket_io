@@ -15,21 +15,42 @@ app.use('/', (req, res)=> {
 });
 
 let messages = [];
+let peoplesConnected = [];
 
 io.on('connection', socket => {
-   console.log(`Id conectado:${socket.id}`);
+   //console.log(`Id conectado:${socket.id}`);
+
+   function updatePeoplesConnected(room) {
+      let peoplesRoom = peoplesConnected.filter(people => {
+         return people.room == room
+      });
+
+      console.log(peoplesConnected);
+
+      //Emit esse evento para todas as pessoas da sala, incluindo o proprio usuário do socket
+      io.sockets.in(room).emit('updatePeoplesConnected', peoplesRoom);
+   }
 
    socket.on('addToRoom', data => {
       //Entra com o usuário na sala selecionada;
-      socket.join(data);
+      socket.join(data.room);
 
       //Recupera todas as mensagens da sala que o usuário acabou de entrar
       let arrMessagesSala = messages.filter(message => {
-         return message.room == data;
+         return message.room == data.room;
       })
 
       //Emit para o usuário com todas as mensagens da sala;
       socket.emit('previousMessage', arrMessagesSala);
+
+      //Adiciona a pessoa atual ao array de pessoas conectadas a alguma sala.
+      peoplesConnected.push({
+         username: data.username,
+         socketId: socket.id,
+         room: data.room
+      });
+
+      updatePeoplesConnected(data.room);
    });
 
    socket.on('sendMessage', data => {
@@ -40,6 +61,13 @@ io.on('connection', socket => {
 
    socket.on('removeFromRoom', data => {
       socket.leave(data);
+
+      //Remove a pessoa atual das pessoas conectadas a alguma sala.
+      peoplesConnected = peoplesConnected.filter(people => {
+         return people.socketId != socket.id
+      })
+
+      updatePeoplesConnected(data);
    });
 });
 

@@ -7,22 +7,46 @@
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-   <script src="function.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <form id="chat">
-      <input class="div_conectar" type="text" id="room" name="room" placeholder="Sala para conectar">
-      <button class="div_conectar" type="button" id="conectar">Conectar</button>
-      <button type="button" class="div_sair" id="sair">Sair da sala</button>
-      <div class="div_sair">
-         <input type="text" id="username" name="username" placeholder="Digite seu nome">
-         <div class="messages"></div>
-         <input type="text" id="message" name="message" placeholder="Digite sua mensagem">
-         <button type="submit">Enviar</button>
-      </div>
-   </form>
+   <div id="app-vue">
+      <form id="chat">
+
+         <input v-show="!isConectado" v-model="room" type="text" id="room" name="room" placeholder="Sala para conectar">
+         <input v-show="!isConectado" v-model="username" type="text" id="username" name="username"
+            placeholder="Digite seu nome"
+            style="margin-top: 10px;" @keypress.enter="conectarNaSala()">
+
+         <button v-show="!isConectado" type="button" id="conectar" @click="conectarNaSala()">Conectar</button>
+
+         <button v-show="isConectado" type="button" id="sair" @click="sairDaSala()">Sair da sala</button>
+
+         <p v-show="isConectado">Pessoas conectadas a sala:</p>
+
+         <ul v-show="isConectado">
+            <li v-for="(pessoa, index) in arrPeoplesConnected" :key="index">
+               {{pessoa.username}} <span v-show="pessoa.username == username">(Você)</span>
+            </li>
+         </ul>
+
+         <div v-show="isConectado" style="width: 600px;">
+            <div class="messages">
+               <div class="message" v-for="(message, index) in arrMessages" :key="index">
+                  <strong>{{message.author}}: </strong>{{message.message}}
+               </div>
+            </div>
+            <input type="text" id="message" name="message" v-model="message" placeholder="Digite sua mensagem"
+               @keypress.enter="enviarMensagem()">
+            <button type="button" @click="enviarMensagem()">Enviar</button>
+         </div>
+
+      </form>
+   </div>
+
+   <script src="app.js"></script>
 </body>
 </html>
 
