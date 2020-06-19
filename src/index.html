@@ -33,9 +33,26 @@
          </ul>
 
          <div v-show="isConectado" style="width: 600px;">
+
+            <p>Enviar mensagem para:</p>
+            <select v-model="privateMessageId" style="width: 600px;">
+               <option value="">
+                  Todos
+               </option>
+               <option
+                  v-for="(pessoa, index) in getPeoplesMessagePrivate" :key="index"
+                  :value="pessoa.socketId"
+               >
+                  {{ pessoa.username }}
+               </option>
+            </select>
+
             <div class="messages">
                <div class="message" v-for="(message, index) in arrMessages" :key="index">
-                  <strong>{{message.author}}: </strong>{{message.message}}
+                  <strong>
+                     <span v-show="message.privateMessageId != null">(Privada) - </span>{{message.author}}:
+                  </strong>
+                  {{message.message}}
                </div>
             </div>
             <input type="text" id="message" name="message" v-model="message" placeholder="Digite sua mensagem"

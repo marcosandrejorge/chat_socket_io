@@ -23,6 +23,12 @@ io.of('namespace1').emit('message', 'gg');
 // enviando para um socketid individual
 client.broadcast.to(socketid).emit('message', 'for your eyes only');
 
+// Envia para um namespace e uma sala específica
+io.of('myNamespace').to('room').emit('event', 'message');
+
+// Emit o evento para um socketId (Mensagem privada)
+io.to(socketId).emit('hey', 'I just met you');
+
 io.on('connection', function(socket){
 
   socket.join('minha sala');

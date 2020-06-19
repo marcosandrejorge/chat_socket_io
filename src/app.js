@@ -2,16 +2,22 @@ new Vue({
     el: "#app-vue",
     data: {
         username: "",
+        socketId: null,
         room: "",
         arrMessages: [],
         message: "",
         socketIO: null,
         isConectado: false,
-        arrPeoplesConnected: []
+        arrPeoplesConnected: [],
+        privateMessageId: "",
     },
 
     computed: {
-
+        getPeoplesMessagePrivate() {
+            return this.arrPeoplesConnected.filter(people => {
+                return people.socketId != this.socketId
+            });
+        }
     },
 
     methods: {
@@ -41,7 +47,8 @@ new Vue({
             let objMessage = {
                 author: this.username,
                 message: this.message,
-                room: this.room
+                room: this.room,
+                privateMessageId: this.privateMessageId == "" ? null : this.privateMessageId
             };
 
             this.arrMessages.push(objMessage);
@@ -54,17 +61,25 @@ new Vue({
         setSocketIo() {
             this.socketIO = io('http://localhost:3000');
 
-            this.socketIO.on('receivedMessage', data => {
-                this.arrMessages.push(data);
+            this.socketIO.on('receivedMessage', message => {
+                this.arrMessages.push(message);
             });
 
             this.socketIO.on('previousMessage', arrMessages => {
                 this.arrMessages = arrMessages;
             });
 
+            this.socketIO.on('privateMessage', message => {
+                this.arrMessages.push(message);
+            });
+
             this.socketIO.on('updatePeoplesConnected', arrPeoplesConnected => {
                 this.arrPeoplesConnected = arrPeoplesConnected
             });
+
+            this.socketIO.on('socketId', socketId => {
+                this.socketId = socketId;
+            })
         },
     },
 
